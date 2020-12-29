@@ -24,11 +24,14 @@ class Another_Main(QMainWindow, FORM_x1):
         QMainWindow.__init__(self)
         self.setupUi(self)
         self.Handle_Buttons()
+        
+    
     
  
 #Button Functions 
     def Handle_Buttons(self):
         pass
+
     
    
     
@@ -38,46 +41,55 @@ class Main(QMainWindow, FORM_x):
         super(Main,self).__init__(parent)
         QMainWindow.__init__(self)
         self.setupUi(self)
-        self.Handle_Buttons()
-    
- 
-#Button Functions 
-    def Handle_Buttons(self):
-        self.addon_button.clicked.connect(self.combobox_fill)
-
-
-
-
-    def combobox_fill(self):
         
+        self.Handle_Buttons()
+        self.combobox_fill()
+        
+        
+    
+ #######new
+#Button Functions 
+    def Handle_Buttons(self):            
+        self.addon_button.clicked.connect(self.ben)
+
+
+
+    def ben(self):                
+        row_data = ['ben','1000000']    
+        table = self.addon_table
+        self.addTableRow(table, row_data)
+        
+    def combobox_fill(self):
+                   
         db=sqlite3.connect("countrywingsdatabase.db") #database file
         cursor=db.cursor()
         
         command= ''' SELECT item_name from inventory''' # db command line filter
-        result=cursor.execute(command)
+        result = cursor.execute(command)
         
-        x= str(result.fetchall())
+        data = []
+        # data = ['A','C','D','B']        
+        for row in result.fetchall():
+            data.append(row[0])
+        # self.addon_listbox['values'] = data
+        # return data
+        # self.addon_listbox.items(data)
+        for x in data:
+            self.addon_listbox.addItem(x)
+            
+    
+    def addTableRow(self, addon_table, row_data):
         
-        command2= ''' SELECT max(item_id) from inventory''' # db command line filter
-        result2=cursor.execute(command)
         
-        
-        for i in enumerate(result2):
-            self.addon_listbox.addItem(str(i))
-        
+        row = addon_table.rowCount()
+        addon_table.setRowCount(row+1)
+        col = 0
+        for item in row_data:
+            cell = QTableWidgetItem(str(item))
+            addon_table.setItem(row, col, cell)
+            col += 1
 
-
-
-
-
-
-
-   
-
-
-
-
-
+    
 
 
 
@@ -91,7 +103,7 @@ def main():
         window=Main()
         
         window.show()
-        app.exec_()  
+        app.exec_()          
         
 
 def mains():
@@ -104,7 +116,3 @@ def mains():
  #updatelistbox
 
 main()
-
-    
-    
-    
