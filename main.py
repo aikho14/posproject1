@@ -24,14 +24,11 @@ class Another_Main(QMainWindow, FORM_x1):
         QMainWindow.__init__(self)
         self.setupUi(self)
         self.Handle_Buttons()
-        
-    
     
  
 #Button Functions 
     def Handle_Buttons(self):
         pass
-
     
    
     
@@ -41,55 +38,63 @@ class Main(QMainWindow, FORM_x):
         super(Main,self).__init__(parent)
         QMainWindow.__init__(self)
         self.setupUi(self)
-        
         self.Handle_Buttons()
         self.combobox_fill()
-        
-        
-    
- #######new
+ 
 #Button Functions 
-    def Handle_Buttons(self):            
-        self.addon_button.clicked.connect(self.ben)
+    def Handle_Buttons(self):
+        self.addon_button.clicked.connect(self.add_button)
 
 
 
-    def ben(self):                
-        row_data = ['ben','1000000']    
-        table = self.addon_table
-        self.addTableRow(table, row_data)
-        
-    def combobox_fill(self):
-                   
+    def combobox_fill(self):        
         db=sqlite3.connect("countrywingsdatabase.db") #database file
         cursor=db.cursor()
         
         command= ''' SELECT item_name from inventory''' # db command line filter
         result = cursor.execute(command)
-        
-        data = []
-        # data = ['A','C','D','B']        
-        for row in result.fetchall():
-            data.append(row[0])
-        # self.addon_listbox['values'] = data
-        # return data
-        # self.addon_listbox.items(data)
-        for x in data:
-            self.addon_listbox.addItem(x)
-            
     
-    def addTableRow(self, addon_table, row_data):
-        
-        
-        row = addon_table.rowCount()
-        addon_table.setRowCount(row+1)
-        col = 0
-        for item in row_data:
-            cell = QTableWidgetItem(str(item))
-            addon_table.setItem(row, col, cell)
-            col += 1
+        items  = []# list items in inventory
+        #loop to insert items to combo box
+        for items_inbox in result.fetchall():
+            items.append(items_inbox[0])
 
+        for x  in items:
+            self.addon_listbox.addItem(x)
     
+    
+    
+    def add_button(self):
+        db=sqlite3.connect("countrywingsdatabase.db") #database file
+        cursor2=db.cursor()
+        
+        addon_text= str(self.addon_listbox.currentText()) 
+        
+        getprice= ''' SELECT item_price from inventory where item_name =?''' # db command line filter
+        
+        resultitem_price=cursor2.execute(getprice,[addon_text])
+        
+        item_price=str(resultitem_price.fetchone()[0])
+        
+        addon_list=[addon_text, item_price]
+        
+        table=self.addon_table
+        self.addTableRow(table , addon_list) 
+        
+        print (addon_list)
+        
+    def addTableRow(self, addon_table, addon_list):
+        
+         
+         row=addon_table.rowCount()
+         addon_table.setRowCount(row+1)
+
+
+
+
+
+
+
 
 
 
@@ -100,10 +105,9 @@ class Main(QMainWindow, FORM_x):
 
 def main():
         app=QApplication(sys.argv)
-        window=Main()
-        
+        window=Main()     
         window.show()
-        app.exec_()          
+        app.exec_()  
         
 
 def mains():
@@ -116,3 +120,7 @@ def mains():
  #updatelistbox
 
 main()
+
+    
+    
+    
