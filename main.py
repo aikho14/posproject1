@@ -50,7 +50,7 @@ class Main(QMainWindow, FORM_x):
  #######new
 #Button Functions 
     def Handle_Buttons(self):            
-        self.addon_button.clicked.connect(self.ben)
+        self.addon_button.clicked.connect(self.add_item)
 
 
 
@@ -74,7 +74,7 @@ class Main(QMainWindow, FORM_x):
         for x in data:
             self.addon_listbox.addItem(x)
     
-    def ben(self):
+    def add_item(self):
         db=sqlite3.connect("countrywingsdatabase.db") #database file
         cursor2=db.cursor()        
         addon_text= str(self.addon_listbox.currentText())         
