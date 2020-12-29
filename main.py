@@ -62,7 +62,7 @@ class Main(QMainWindow, FORM_x):
         result2=cursor.execute(command)
         
         
-        for i in int(result2):
+        for i in enumerate(result2):
             self.addon_listbox.addItem(str(i))
         
 
